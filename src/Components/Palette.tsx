@@ -1,16 +1,6 @@
 import styled from "styled-components";
-
-const COLORS = [
-  "#2c2c2c",
-  "white",
-  "#ff3b30",
-  "#ff9500",
-  "#ffcc00",
-  "#4cd963",
-  "#5ac8fa",
-  "#0579ff",
-  "#5856d6",
-];
+import { COLORS, colorState } from "../atoms";
+import { useSetRecoilState } from "recoil";
 
 const Wrapper = styled.div`
   display: grid;
@@ -28,10 +18,11 @@ const ColorBox = styled.div<{ color: string }>`
 `;
 
 function Palette() {
+  const setColor = useSetRecoilState(colorState);
   return (
     <Wrapper>
       {COLORS.map((color) => (
-        <ColorBox color={color} />
+        <ColorBox key={color} color={color} onClick={() => setColor(color)} />
       ))}
     </Wrapper>
   );
