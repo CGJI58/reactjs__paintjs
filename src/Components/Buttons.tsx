@@ -1,4 +1,6 @@
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { modeState } from "../atoms";
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,9 +24,15 @@ const Button = styled.button`
 `;
 
 function Buttons() {
+  const [mode, setMode] = useRecoilState(modeState);
+
   return (
     <Wrapper>
-      <Button>Fill</Button>
+      {mode ? (
+        <Button onClick={() => setMode(false)}>Paint</Button>
+      ) : (
+        <Button onClick={() => setMode(true)}>Fill</Button>
+      )}
       <Button>Save</Button>
     </Wrapper>
   );

@@ -21,3 +21,12 @@ export const widthState = atom<number>({
   key: "width",
   default: 1,
 });
+
+/**
+ * @true Paint mode
+ * @false Fill mode
+ */
+export const modeState = atom({
+  key: "mode",
+  default: true,
+});
