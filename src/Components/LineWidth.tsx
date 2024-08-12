@@ -23,7 +23,10 @@ function LineWidth() {
         max={MAX_WIDTH}
         value={width}
         step="0.2"
-        onChange={(event) => setWidth(+event.target.value)}
+        onChange={(event) => {
+          setWidth(+event.target.value);
+          console.log("line width : ", width);
+        }}
         onMouseUp={handleChange}
       />
     </Wrapper>

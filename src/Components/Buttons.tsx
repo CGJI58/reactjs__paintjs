@@ -29,9 +29,23 @@ function Buttons() {
   return (
     <Wrapper>
       {mode ? (
-        <Button onClick={() => setMode(false)}>Paint</Button>
+        <Button
+          onClick={() => {
+            setMode(false);
+            console.log("Paint mode.");
+          }}
+        >
+          Paint
+        </Button>
       ) : (
-        <Button onClick={() => setMode(true)}>Fill</Button>
+        <Button
+          onClick={() => {
+            setMode(true);
+            console.log("Fill mode.");
+          }}
+        >
+          Fill
+        </Button>
       )}
       <Button>Save</Button>
     </Wrapper>

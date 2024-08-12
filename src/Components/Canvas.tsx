@@ -1,4 +1,4 @@
-import { useEffect, useRef, FC } from "react";
+import { useEffect, useRef, FC, useState } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { colorState, modeState, widthState } from "../atoms";
@@ -14,53 +14,20 @@ const Canvas = styled.canvas`
 const CanvasComponent: FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mousePositionRef = useRef({ x: 0, y: 0 });
+  const { x, y } = mousePositionRef.current;
+  const [drawing, setDrawing] = useState(false);
   const color = useRecoilValue(colorState);
   const width = useRecoilValue(widthState);
   const mode = useRecoilValue(modeState);
+  const canvas = canvasRef.current;
+  const ctx = canvas?.getContext("2d");
 
-  const handleMouseMove = (event: MouseEvent) => {
-    if (canvasRef.current) {
-      mousePositionRef.current = {
-        x: event.offsetX,
-        y: event.offsetY,
-      };
-    }
-  };
+  if (canvas) {
+    canvas.height = canvas.offsetHeight;
+    canvas.width = canvas.offsetWidth;
+  }
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.addEventListener("mousemove", handleMouseMove);
-    }
-  }, []);
-
-  return (
-    <Canvas
-      ref={canvasRef}
-      // onMouseMove={() => console.log(mousePositionRef.current)}
-      onMouseDown={onPainting}
-      onMouseUp={stopPainting}
-      onMouseLeave={stopPainting}
-      onClickCapture={onClick}
-      onContextMenu={onContextMenu}
-    />
-  );
+  return <Canvas ref={canvasRef} />;
 };
-
-function onPainting() {
-  console.log("Painting...");
-}
-
-function stopPainting() {
-  console.log("stop Painting.");
-}
-
-function onClick() {
-  console.log("clicked.");
-}
-
-function onContextMenu() {
-  console.log("handleCM...");
-}
 
 export default CanvasComponent;

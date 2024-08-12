@@ -22,7 +22,14 @@ function Palette() {
   return (
     <Wrapper>
       {COLORS.map((color) => (
-        <ColorBox key={color} color={color} onClick={() => setColor(color)} />
+        <ColorBox
+          key={color}
+          color={color}
+          onClick={() => {
+            setColor(color);
+            console.log("color:", color);
+          }}
+        />
       ))}
     </Wrapper>
   );
