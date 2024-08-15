@@ -31,20 +31,20 @@ function Buttons() {
       {mode ? (
         <Button
           onClick={() => {
-            setMode(false);
-            console.log("Paint mode.");
-          }}
-        >
-          Paint
-        </Button>
-      ) : (
-        <Button
-          onClick={() => {
-            setMode(true);
+            setMode((prev) => !prev);
             console.log("Fill mode.");
           }}
         >
           Fill
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            setMode((prev) => !prev);
+            console.log("Paint mode.");
+          }}
+        >
+          Paint
         </Button>
       )}
       <Button>Save</Button>
