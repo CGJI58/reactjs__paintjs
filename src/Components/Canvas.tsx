@@ -21,13 +21,10 @@ function CanvasComponent() {
     x: 0,
     y: 0,
   });
+  const [drawOn, setDrawOn] = useState(false);
   const color = useRecoilValue(colorState);
   const width = useRecoilValue(widthState);
   const mode = useRecoilValue(modeState);
-
-  useEffect(() => {
-    console.log(coordinates);
-  }, [coordinates]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -36,13 +33,23 @@ function CanvasComponent() {
       canvas.height = canvas.offsetHeight;
       canvas.width = canvas.offsetWidth;
       if (context) {
-        draw({
-          context,
-          color,
-          width,
-          mode,
-          coordinates,
-        });
+        if (!drawOn) {
+          //여기가 연속적으로 실행돼야하는데 안됨. mouseMove 내내 실행하게 바꿀 것.
+          //마우스 움직이면서 마우스 버튼을 떼면 한번 실행됨.
+          //마우스 멈추고 나서 마우스 버튼을 떼면 실행 안 됨.
+          // context.beginPath();
+          // context.moveTo(coordinates.x, coordinates.y);
+          console.log("moving...");
+        } else {
+          draw({
+            context,
+            color,
+            width,
+            mode,
+            coordinates,
+          });
+          console.log("drawing...");
+        }
       }
     }
   }, [color, width, mode, coordinates]);
@@ -50,11 +57,14 @@ function CanvasComponent() {
   return (
     <Canvas
       ref={canvasRef}
-      // onMouseMove={({ nativeEvent: { offsetX, offsetY } }) => {
-      //   console.log(offsetX, offsetY);
-      // }}
-      onClick={({ nativeEvent: { offsetX, offsetY } }) => {
-        setCoordinates({ x: offsetX, y: offsetY });
+      onMouseDownCapture={({ nativeEvent: { offsetX: x, offsetY: y } }) => {
+        setDrawOn(true);
+        setCoordinates({ x, y });
+      }}
+      onMouseUpCapture={() => setDrawOn(false)}
+      onMouseOutCapture={() => setDrawOn(false)}
+      onMouseMove={({ nativeEvent: { offsetX: x, offsetY: y } }) => {
+        if (drawOn) setCoordinates({ x, y });
       }}
     />
   );
@@ -79,9 +89,11 @@ const draw = ({
   context.strokeStyle = color;
   context.lineWidth = width;
 
-  context.beginPath();
+  // context.beginPath();
   drawCircle(context, { x, y });
   handleMode(context, mode);
+  // context.lineTo(x, y);
+  // context.stroke();
 };
 
 const drawCircle = (
