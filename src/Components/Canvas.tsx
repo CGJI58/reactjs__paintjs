@@ -3,9 +3,12 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { colorState, modeState, widthState } from "../atoms";
 
+const CANVAS_WIDTH = 400;
+const CANVAS_HEIGHT = 400;
+
 const Canvas = styled.canvas`
-  width: 400px;
-  height: 400px;
+  width: ${CANVAS_WIDTH}px;
+  height: ${CANVAS_HEIGHT}px;
   background-color: whitesmoke;
   box-shadow: 0 4px 60x rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 `;
@@ -18,8 +21,8 @@ interface ICoordinates {
 function CanvasComponent() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [coordinates, setCoordinates] = useState<ICoordinates>({
-    x: 0,
-    y: 0,
+    x: CANVAS_WIDTH / 2,
+    y: CANVAS_HEIGHT / 2,
   });
   const [drawOn, setDrawOn] = useState(false);
   const color = useRecoilValue(colorState);
@@ -33,38 +36,31 @@ function CanvasComponent() {
       canvas.height = canvas.offsetHeight;
       canvas.width = canvas.offsetWidth;
       if (context) {
-        if (!drawOn) {
-          //여기가 연속적으로 실행돼야하는데 안됨. mouseMove 내내 실행하게 바꿀 것.
-          //마우스 움직이면서 마우스 버튼을 떼면 한번 실행됨.
-          //마우스 멈추고 나서 마우스 버튼을 떼면 실행 안 됨.
-          // context.beginPath();
-          // context.moveTo(coordinates.x, coordinates.y);
-          console.log("moving...");
-        } else {
-          draw({
-            context,
-            color,
-            width,
-            mode,
-            coordinates,
-          });
-          console.log("drawing...");
-        }
+        context.fillStyle = color;
+        context.strokeStyle = color;
+        context.lineWidth = width;
       }
     }
-  }, [color, width, mode, coordinates]);
+  }, [color, width, mode]);
 
   return (
     <Canvas
       ref={canvasRef}
       onMouseDownCapture={({ nativeEvent: { offsetX: x, offsetY: y } }) => {
+        const canvas = canvasRef.current?.getContext("2d");
         setDrawOn(true);
         setCoordinates({ x, y });
+        canvas?.beginPath();
       }}
       onMouseUpCapture={() => setDrawOn(false)}
       onMouseOutCapture={() => setDrawOn(false)}
       onMouseMove={({ nativeEvent: { offsetX: x, offsetY: y } }) => {
-        if (drawOn) setCoordinates({ x, y });
+        const canvas = canvasRef.current?.getContext("2d");
+        if (drawOn) {
+          setCoordinates({ x, y });
+          canvas?.lineTo(x, y);
+          canvas?.stroke();
+        }
       }}
     />
   );
@@ -90,17 +86,18 @@ const draw = ({
   context.lineWidth = width;
 
   // context.beginPath();
-  drawCircle(context, { x, y });
+  pointer(context, width, { x, y });
   handleMode(context, mode);
   // context.lineTo(x, y);
   // context.stroke();
 };
 
-const drawCircle = (
+const pointer = (
   context: CanvasRenderingContext2D,
+  width: number,
   { x, y }: ICoordinates
 ) => {
-  context.arc(x, y, 20, 0, 2 * Math.PI);
+  context.arc(x, y, Math.max(2, width), 0, 2 * Math.PI);
 };
 
 const handleMode = (context: CanvasRenderingContext2D, mode: boolean) => {
