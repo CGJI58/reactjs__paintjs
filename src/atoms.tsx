@@ -19,14 +19,25 @@ export const colorState = atom<string>({
 
 export const widthState = atom<number>({
   key: "width",
-  default: 1,
+  default: 10,
 });
 
+interface IButtonState {
+  drawMode: boolean;
+  clear: boolean;
+  save: boolean;
+}
+
 /**
+ * In drawMode
  * @true Paint mode
  * @false Fill mode
  */
-export const modeState = atom({
+export const buttonState = atom<IButtonState>({
   key: "mode",
-  default: true,
+  default: {
+    drawMode: true,
+    clear: true,
+    save: true,
+  },
 });

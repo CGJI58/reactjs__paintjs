@@ -1,9 +1,11 @@
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { modeState } from "../atoms";
+import { buttonState } from "../atoms";
 
 const Wrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   gap: 10px;
 `;
 
@@ -24,14 +26,14 @@ const Button = styled.button`
 `;
 
 function Buttons() {
-  const [mode, setMode] = useRecoilState(modeState);
+  const [btnCtrl, setBtnCtrl] = useRecoilState(buttonState);
 
   return (
     <Wrapper>
-      {mode ? (
+      {btnCtrl.drawMode ? (
         <Button
           onClick={() => {
-            setMode((prev) => !prev);
+            setBtnCtrl((prev) => ({ ...prev, drawMode: false }));
             console.log("Fill mode.");
           }}
         >
@@ -40,14 +42,19 @@ function Buttons() {
       ) : (
         <Button
           onClick={() => {
-            setMode((prev) => !prev);
+            setBtnCtrl((prev) => ({ ...prev, drawMode: true }));
             console.log("Paint mode.");
           }}
         >
           Paint
         </Button>
       )}
-      <Button>Save</Button>
+
+      <Button
+        onClick={() => setBtnCtrl((prev) => ({ ...prev, clear: !prev.clear }))}
+      >
+        Clear
+      </Button>
     </Wrapper>
   );
 }

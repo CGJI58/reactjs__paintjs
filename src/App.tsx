@@ -3,37 +3,51 @@ import Buttons from "./Components/Buttons";
 import Palette from "./Components/Palette";
 import LineWidth from "./Components/LineWidth";
 import Canvas from "./Components/Canvas";
-import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { colorState, widthState } from "./atoms";
+import { useState } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
   padding: 20px 0px;
+  background-color: gray;
 `;
 
 const Controls = styled.div`
-  margin-top: 30px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  > * {
+    margin: 0 30px;
+  }
+`;
+
+const ControlsLeftSide = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 20px;
 `;
 
+const ControlsRightSide = styled.div``;
+
 function App() {
-  const colorPick = useRecoilValue(colorState);
-  const widthPick = useRecoilValue(widthState);
   return (
     <Wrapper>
       <Canvas />
       <Controls>
-        <Palette />
-        <LineWidth />
-        <Buttons />
+        <ControlsLeftSide>
+          <Palette />
+          <LineWidth />
+        </ControlsLeftSide>
+        <ControlsRightSide>
+          <Buttons />
+        </ControlsRightSide>
       </Controls>
     </Wrapper>
   );

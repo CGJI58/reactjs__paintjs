@@ -3,7 +3,7 @@ import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { widthState } from "../atoms";
 
-const MAX_WIDTH = 5;
+const MAX_WIDTH = 20;
 
 const Wrapper = styled.div``;
 
@@ -13,20 +13,18 @@ function LineWidth() {
 
   const handleChange = (event: any) => {
     setWidthState(+event.target.value);
+    console.log("line width : ", width);
   };
   return (
     <Wrapper>
       <input
         type="range"
         id="jsRange"
-        min="0.2"
+        min="2"
         max={MAX_WIDTH}
         value={width}
-        step="0.2"
-        onChange={(event) => {
-          setWidth(+event.target.value);
-          console.log("line width : ", width);
-        }}
+        step="2"
+        onChange={(event) => setWidth(+event.target.value)}
         onMouseUp={handleChange}
       />
     </Wrapper>
