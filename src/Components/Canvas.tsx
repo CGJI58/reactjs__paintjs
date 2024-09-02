@@ -5,7 +5,8 @@ import { colorState, buttonState, widthState } from "../atoms";
 
 const CANVAS_WIDTH = 600;
 const CANVAS_HEIGHT = 400;
-const CANVAS_COLOR = "#f5f5f5"; //요 색깔로 fill하는거를 지우개로 사용할 것.
+const CANVAS_COLOR = "#f5f5f5";
+const MAGNIFICATION = 2;
 
 const Canvas = styled.canvas`
   width: ${CANVAS_WIDTH}px;
@@ -26,8 +27,8 @@ function CanvasComponent() {
   useEffect(() => {
     if (canvas) {
       const context = canvas.getContext("2d");
-      canvas.height = canvas.offsetHeight * 2;
-      canvas.width = canvas.offsetWidth * 2;
+      canvas.height = canvas.offsetHeight * MAGNIFICATION;
+      canvas.width = canvas.offsetWidth * MAGNIFICATION;
       if (context) {
         context.fillStyle = color;
         context.strokeStyle = color;
@@ -36,24 +37,16 @@ function CanvasComponent() {
     }
   }, []);
 
-  interface IDrawLine {
-    x: number;
-    y: number;
-    canvas: CanvasRenderingContext2D;
-  }
-
-  const drawLine = ({ x, y, canvas }: IDrawLine) => {
-    canvas.strokeStyle = color;
-    canvas.lineWidth = width;
-    canvas.lineTo(x, y);
-    canvas.stroke();
-  };
-
   useEffect(() => {
     if (canvas) {
       canvas
         .getContext("2d")
-        ?.clearRect(0, 0, CANVAS_WIDTH * 2, CANVAS_HEIGHT * 2);
+        ?.clearRect(
+          0,
+          0,
+          CANVAS_WIDTH * MAGNIFICATION,
+          CANVAS_HEIGHT * MAGNIFICATION
+        );
     }
   }, [buttons.clear]);
 
@@ -70,16 +63,24 @@ function CanvasComponent() {
         } else {
           if (context) {
             context.fillStyle = color;
-            context.fillRect(0, 0, CANVAS_WIDTH * 2, CANVAS_HEIGHT * 2);
+            context.fillRect(
+              0,
+              0,
+              CANVAS_WIDTH * MAGNIFICATION,
+              CANVAS_HEIGHT * MAGNIFICATION
+            );
           }
         }
       }}
       onMouseMove={({ nativeEvent: { offsetX: x, offsetY: y } }) => {
         const canvas = canvasRef.current?.getContext("2d");
-        x *= 2;
-        y *= 2;
+        x *= MAGNIFICATION;
+        y *= MAGNIFICATION;
         if (drawOn && canvas) {
-          drawLine({ x, y, canvas });
+          canvas.strokeStyle = color;
+          canvas.lineWidth = width;
+          canvas.lineTo(x, y);
+          canvas.stroke();
         }
       }}
     />
